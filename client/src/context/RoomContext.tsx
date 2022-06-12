@@ -1,40 +1,28 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import socketIO from 'socket.io-client';
-
-const JOIN_ROOM = 'join-room';
-const CREATE_ROOM = 'create-room';
-const ROOM_CREATED = 'room-created';
-const wsUri = 'http://localhost:8080';
+import { useNavigate } from "react-router-dom";
+import { constants } from '../constants';
 
 const RoomContext = createContext<null | any>(null);
 
-const ws = socketIO(wsUri);
+const ws = socketIO(constants.WS_URI);
 
 export const useRoomContext = () => {
     return useContext(RoomContext)
 }
 
 export const RoomProvider: React.FC<Props> = ({ children }) => {
+    let navigate = useNavigate();
     const enterRoom = ({ roomId } : { roomId: string}) => {
-        console.log('client room----', roomId);
+        navigate(`/room/${roomId}`);
     }
 
     useEffect( () => {
-        ws.on(ROOM_CREATED, enterRoom)
+        ws.on(constants.ROOM_CREATED, enterRoom);
     }, []);
-    
-    const joinRoom = () => {
-        return ws.emit(JOIN_ROOM);
-    }
-
-    const createRoom = () => {
-        return ws.emit(CREATE_ROOM);
-    }
 
     const data = {
-        ws,
-        joinRoom,
-        createRoom
+        ws
     }
 
     return <RoomContext.Provider value={data}>{children}</RoomContext.Provider>;

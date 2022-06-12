@@ -1,8 +1,13 @@
 import React from 'react'
 import { useRoomContext } from '../context/RoomContext';
+import { constants } from '../constants';
 
 export const CreateButton: React.FC = () => {
-    const { createRoom } = useRoomContext();
+    const { ws } = useRoomContext();
+
+    const createRoom = () => {
+        return ws.emit(constants.CREATE_ROOM);
+    }
     return ( 
         <button
             onClick={createRoom}
