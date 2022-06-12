@@ -3,6 +3,8 @@ import { createServer } from "http";
 import { Server, Socket } from 'socket.io';
 import cors from 'cors';
 
+import { roomHandler } from './room';
+
 const app = express();
 app.use(cors());
 const PORT = process.env.PORT || 8080;
@@ -20,8 +22,7 @@ app.get('/', (_req, res) => {
 });
 
 io.on("connection", (socket: Socket) => {
-    console.log('user is connected!');
-
+    roomHandler(socket);
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });
